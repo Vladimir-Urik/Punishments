@@ -8,32 +8,44 @@ import lol.gggedr.punishments.utils.StringUtils;
 @ConfigInfo(fileName = "messages.yml")
 public class MessagesConfig implements Config {
 
-    @ConfigField(path = "commands.warn.usage", defaultValue = "&cUsage: /warn <player> <reason>")
-    private String warnCommandUsage;
+    @ConfigField(path = "commands.warn.usage")
+    private String warnCommandUsage = "&cUsage: /warn <player> <reason>";
 
-    @ConfigField(path = "commands.kick.usage", defaultValue = "&cUsage: /kick <player> [reason] [-s]")
-    private String kickCommandUsage;
+    @ConfigField(path = "commands.warn.success")
+    private String warnCommandSuccess = "&aSuccessfully warned &e%player% &afor &e%reason%";
 
-    @ConfigField(path = "commands.mute.usage", defaultValue = "&cUsage: /mute <player> [duration] [reason] [-s]")
-    private String muteCommandUsage;
+    @ConfigField(path = "commands.warn.alert.public")
+    private String warnCommandAlertPublic = "&e%player% &ahas been warned for &e%reason% &aby &e%issuer%";
 
-    @ConfigField(path = "commands.ban.usage", defaultValue = "&cUsage: /ban <player> [duration] [reason] [-s]")
-    private String banCommandUsage;
+    @ConfigField(path = "commands.warn.alert.silent")
+    private String warnCommandAlertSilent = "&e%player% &ahas been warned for &e%reason% &aby &e%issuer% &c(silent)";
 
-    @ConfigField(path = "commands.unmute.usage", defaultValue = "&cUsage: /unmute <player> [-s]")
-    private String unmuteCommandUsage;
+    @ConfigField(path = "commands.warn.alert.target")
+    private String warnCommandAlertTarget = "&aYou have warned &e%player% &afor &e%reason% &aby &e%issuer%";
 
-    @ConfigField(path = "commands.unban.usage", defaultValue = "&cUsage: /unban <player> [-s]")
-    private String unbanCommandUsage;
+    @ConfigField(path = "commands.kick.usage")
+    private String kickCommandUsage = "&cUsage: /kick <player> [reason] [-s]";
 
-    @ConfigField(path = "commands.history.usage", defaultValue = "&cUsage: /history <player>")
-    private String historyCommandUsage;
+    @ConfigField(path = "commands.mute.usage")
+    private String muteCommandUsage = "&cUsage: /mute <player> [duration] [reason] [-s]";
 
-    @ConfigField(path = "no-permission", defaultValue = "&cYou don't have permission to execute this command.")
-    private String noPermissionMessage;
+    @ConfigField(path = "commands.ban.usage")
+    private String banCommandUsage = "&cUsage: /ban <player> [duration] [reason] [-s]";
 
-    @ConfigField(path = "player-not-found", defaultValue = "&cPlayer not found.")
-    private String playerNotFoundMessage;
+    @ConfigField(path = "commands.unmute.usage")
+    private String unmuteCommandUsage = "&cUsage: /unmute <player> [-s]";
+
+    @ConfigField(path = "commands.unban.usage")
+    private String unbanCommandUsage = "&cUsage: /unban <player> [-s]";
+
+    @ConfigField(path = "commands.history.usage")
+    private String historyCommandUsage = "&cUsage: /history <player>";
+
+    @ConfigField(path = "no-permission")
+    private String noPermissionMessage = "&cYou don't have permission to execute this command.";
+
+    @ConfigField(path = "player-not-found")
+    private String playerNotFoundMessage = "&cPlayer not found.";
 
     public String getCommandUsage(String command) {
         return StringUtils.colorize(switch (command) {
@@ -54,5 +66,33 @@ public class MessagesConfig implements Config {
 
     public String getPlayerNotFoundMessage() {
         return StringUtils.colorize(playerNotFoundMessage);
+    }
+
+    public String getWarnCommandSuccess(String player, String reason, String issuer) {
+        return StringUtils.colorize(warnCommandSuccess)
+                .replace("%player%", player)
+                .replace("%reason%", reason)
+                .replace("%issuer%", issuer);
+    }
+
+    public String getWarnCommandAlertPublic(String player, String reason, String issuer) {
+        return StringUtils.colorize(warnCommandAlertPublic)
+                .replace("%player%", player)
+                .replace("%reason%", reason)
+                .replace("%issuer%", issuer);
+    }
+
+    public String getWarnCommandAlertSilent(String player, String reason, String issuer) {
+        return StringUtils.colorize(warnCommandAlertSilent)
+                .replace("%player%", player)
+                .replace("%reason%", reason)
+                .replace("%issuer%", issuer);
+    }
+
+    public String getWarnCommandAlertTarget(String player, String reason, String issuer) {
+        return StringUtils.colorize(warnCommandAlertTarget)
+                .replace("%player%", player)
+                .replace("%reason%", reason)
+                .replace("%issuer%", issuer);
     }
 }

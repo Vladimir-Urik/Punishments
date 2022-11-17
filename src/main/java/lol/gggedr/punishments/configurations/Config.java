@@ -17,17 +17,21 @@ public interface Config {
                 .filter((field) -> field.isAnnotationPresent(ConfigField.class)).toList();
 
         fields.forEach((field) -> {
-            var annotation = field.getAnnotation(ConfigField.class);
+            try {
+                var annotation = field.getAnnotation(ConfigField.class);
 
-            var path = annotation.path();
-            var defaultValue = annotation.defaultValue();
-            var comments = annotation.comments();
+                var path = annotation.path();
+                var defaultValue = field.get(this);
+                var comments = annotation.comments();
 
-            if(defaultValue.isBlank()) return;
-            yaml.set(path, defaultValue);
+                if (defaultValue == null) return;
+                yaml.set(path, defaultValue);
 
-            if(comments.length == 0) return;
-            yaml.setComments(path, Arrays.stream(comments).toList());
+                if (comments.length == 0) return;
+                yaml.setComments(path, Arrays.stream(comments).toList());
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
         });
 
         return yaml;
@@ -52,16 +56,16 @@ public interface Config {
                 .filter((field) -> field.isAnnotationPresent(ConfigField.class)).toList();
 
         fields.forEach((field) -> {
-            var annotation = field.getAnnotation(ConfigField.class);
-
-            var path = annotation.path();
-            var defaultValue = annotation.defaultValue();
-
-            if(!yaml.contains(path)) {
-                yaml.set(path, defaultValue);
-            }
-
             try {
+                var annotation = field.getAnnotation(ConfigField.class);
+
+                var path = annotation.path();
+                var defaultValue = field.get(this);
+
+                if(!yaml.contains(path)) {
+                    yaml.set(path, defaultValue);
+                }
+
                 field.set(this, yaml.get(path));
             } catch (IllegalAccessException e) {
                 e.printStackTrace();

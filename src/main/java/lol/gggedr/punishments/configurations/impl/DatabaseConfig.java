@@ -6,20 +6,20 @@ import lol.gggedr.punishments.configurations.annotations.ConfigInfo;
 @ConfigInfo(fileName = "database.yml")
 public class DatabaseConfig {
 
-    @ConfigField(path = "host", defaultValue = "localhost")
-    private String host;
+    @ConfigField(path = "host")
+    private String host = "localhost";
 
-    @ConfigField(path = "port", defaultValue = "3306")
-    private int port;
+    @ConfigField(path = "port")
+    private int port = 3306;
 
-    @ConfigField(path = "collection", defaultValue = "collection")
-    private String collection;
+    @ConfigField(path = "collection")
+    private String collection = "punishments";
 
-    @ConfigField(path = "user", defaultValue = "root")
-    private String user;
+    @ConfigField(path = "user")
+    private String user = "root";
 
-    @ConfigField(path = "password", defaultValue = "password")
-    private String password;
+    @ConfigField(path = "password")
+    private String password = "password";
 
     public String getHost() {
         return host;

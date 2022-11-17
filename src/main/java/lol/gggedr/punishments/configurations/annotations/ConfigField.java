@@ -11,6 +11,5 @@ public @interface ConfigField {
 
     String path();
     String[] comments() default {};
-    String defaultValue() default "";
 
 }

@@ -7,32 +7,35 @@ import lol.gggedr.punishments.configurations.annotations.ConfigInfo;
 @ConfigInfo(fileName = "permissions.yml")
 public class PermissionsConfig implements Config {
 
-    @ConfigField(path = "commands.ban.permanent", defaultValue = "punishments.ban.permanent")
-    private String permanentBanCommandPermission;
+    @ConfigField(path = "commands.ban.permanent")
+    private String permanentBanCommandPermission = "punishments.ban.permanent";
 
-    @ConfigField(path = "commands.ban.temp", defaultValue = "punishments.ban.temp")
-    private String tempBanCommandPermission;
+    @ConfigField(path = "commands.ban.temp")
+    private String tempBanCommandPermission = "punishments.ban.temp";
 
-    @ConfigField(path = "commands.kick", defaultValue = "punishments.kick")
-    private String kickCommandPermission;
+    @ConfigField(path = "commands.kick")
+    private String kickCommandPermission = "punishments.kick";
 
-    @ConfigField(path = "commands.mute.permanent", defaultValue = "punishments.mute.permanent")
-    private String permanentMuteCommandPermission;
+    @ConfigField(path = "commands.mute.permanent")
+    private String permanentMuteCommandPermission = "punishments.mute.permanent";
 
-    @ConfigField(path = "commands.mute.temp", defaultValue = "punishments.mute.temp")
-    private String tempMuteCommandPermission;
+    @ConfigField(path = "commands.mute.temp")
+    private String tempMuteCommandPermission = "punishments.mute.temp";
 
-    @ConfigField(path = "commands.warn", defaultValue = "punishments.warn")
-    private String warnCommandPermission;
+    @ConfigField(path = "commands.warn")
+    private String warnCommandPermission = "punishments.warn";
 
-    @ConfigField(path = "commands.unban", defaultValue = "punishments.unban")
-    private String unbanCommandPermission;
+    @ConfigField(path = "commands.unban")
+    private String unbanCommandPermission = "punishments.unban";
 
-    @ConfigField(path = "commands.unmute", defaultValue = "punishments.unmute")
-    private String unmuteCommandPermission;
+    @ConfigField(path = "commands.unmute")
+    private String unmuteCommandPermission = "punishments.unmute";
 
-    @ConfigField(path = "commands.history", defaultValue = "punishments.history")
-    private String historyCommandPermission;
+    @ConfigField(path = "commands.history")
+    private String historyCommandPermission = "punishments.history";
+
+    @ConfigField(path = "silent.by-pass")
+    private String silentByPassPermission = "punishments.silent.bypass";
 
     public String getPermanentBanCommandPermission() {
         return permanentBanCommandPermission;
@@ -68,5 +71,9 @@ public class PermissionsConfig implements Config {
 
     public String getHistoryCommandPermission() {
         return historyCommandPermission;
+    }
+
+    public String getSilentByPassPermission() {
+        return silentByPassPermission;
     }
 }

@@ -1,0 +1,4 @@
+name: Punishments
+version: '${version}'
+main: lol.gggedr.punishments.PunishmentsPlugin
+authors: [ GGGEDR ]

@@ -1,16 +1,20 @@
 package lol.gggedr.punishments.configurations.impl;
 
+import lol.gggedr.punishments.configurations.Config;
 import lol.gggedr.punishments.configurations.annotations.ConfigField;
 import lol.gggedr.punishments.configurations.annotations.ConfigInfo;
 
 @ConfigInfo(fileName = "database.yml")
-public class DatabaseConfig {
+public class DatabaseConfig implements Config {
 
     @ConfigField(path = "host")
     private String host = "localhost";
 
     @ConfigField(path = "port")
     private int port = 3306;
+
+    @ConfigField(path = "database")
+    private String database = "punishments";
 
     @ConfigField(path = "collection")
     private String collection = "punishments";
@@ -27,6 +31,10 @@ public class DatabaseConfig {
 
     public int getPort() {
         return port;
+    }
+
+    public String getDatabase() {
+        return database;
     }
 
     public String getCollection() {

@@ -24,7 +24,7 @@ dependencies {
     implementation 'org.reflections:reflections:0.10.2'
 
     // MongoDB
-    implementation 'org.mongodb:mongodb-driver-sync:4.0.5'
+    implementation 'org.mongodb:mongo-java-driver:2.12.3'
 }
 
 def targetJavaVersion = 17

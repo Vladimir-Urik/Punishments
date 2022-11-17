@@ -30,7 +30,7 @@ public class PunishmentsUtils {
         var silent = false;
 
         if(args.length == 1) {
-            return new BasePunishmentDetails(nickname, reason, sender.getName(), duration);
+            return new BasePunishmentDetails(nickname, reason, sender.getName(), duration, silent);
         }
 
         for(int i = 1; i < args.length; i++) {
@@ -48,7 +48,7 @@ public class PunishmentsUtils {
             reason = arg;
         }
 
-        return new BasePunishmentDetails(nickname, reason, sender.getName(), duration);
+        return new BasePunishmentDetails(nickname, reason, sender.getName(), duration, silent);
     }
 
     public static boolean hasPermissions(CommandSender sender, String... permissions) {

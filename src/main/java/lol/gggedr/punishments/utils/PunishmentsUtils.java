@@ -4,6 +4,7 @@ import lol.gggedr.punishments.configurations.impl.MessagesConfig;
 import lol.gggedr.punishments.cons.BasePunishmentDetails;
 import lol.gggedr.punishments.managers.Managers;
 import lol.gggedr.punishments.managers.impl.ConfigurationsManager;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 public class PunishmentsUtils {
@@ -18,6 +19,11 @@ public class PunishmentsUtils {
         }
 
         var nickname = args[0];
+        if(Bukkit.getPlayer(nickname) == null) {
+            var playerNotFound = messagesConfig.getPlayerNotFoundMessage();
+            sender.sendMessage(playerNotFound);
+            return null;
+        }
 
         var duration = 0L;
         var reason = "-";

@@ -32,6 +32,9 @@ public class MessagesConfig implements Config {
     @ConfigField(path = "no-permission", defaultValue = "&cYou don't have permission to execute this command.")
     private String noPermissionMessage;
 
+    @ConfigField(path = "player-not-found", defaultValue = "&cPlayer not found.")
+    private String playerNotFoundMessage;
+
     public String getCommandUsage(String command) {
         return StringUtils.colorize(switch (command) {
             case "warn" -> warnCommandUsage;
@@ -47,5 +50,9 @@ public class MessagesConfig implements Config {
 
     public String getNoPermissionMessage() {
         return StringUtils.colorize(noPermissionMessage);
+    }
+
+    public String getPlayerNotFoundMessage() {
+        return StringUtils.colorize(playerNotFoundMessage);
     }
 }

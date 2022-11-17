@@ -6,4 +6,9 @@ public record BasePunishmentDetails(
         String punisher,
         long duration
 ) {
+
+    public boolean isPermanent() {
+        return duration == 0;
+    }
+
 }

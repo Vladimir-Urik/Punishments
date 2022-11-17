@@ -29,6 +29,9 @@ public class MessagesConfig implements Config {
     @ConfigField(path = "commands.history.usage", defaultValue = "&cUsage: /history <player>")
     private String historyCommandUsage;
 
+    @ConfigField(path = "no-permission", defaultValue = "&cYou don't have permission to execute this command.")
+    private String noPermissionMessage;
+
     public String getCommandUsage(String command) {
         return StringUtils.colorize(switch (command) {
             case "warn" -> warnCommandUsage;
@@ -40,5 +43,9 @@ public class MessagesConfig implements Config {
             case "history" -> historyCommandUsage;
             default -> "";
         });
+    }
+
+    public String getNoPermissionMessage() {
+        return StringUtils.colorize(noPermissionMessage);
     }
 }

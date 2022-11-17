@@ -35,7 +35,7 @@ public class PunishmentsUtils {
                 }
                 continue;
             }
-            if(TimeUtils.isStartWithTime(arg)) {
+            if((!command.equalsIgnoreCase("warn") && !command.equalsIgnoreCase("kick")) && TimeUtils.isStartWithTime(arg)) {
                 duration = TimeUtils.parseTime(arg);
                 continue;
             }
@@ -43,6 +43,33 @@ public class PunishmentsUtils {
         }
 
         return new BasePunishmentDetails(nickname, reason, sender.getName(), duration);
+    }
+
+    public static boolean hasPermissions(CommandSender sender, String... permissions) {
+        var messagesConfig = Managers.getManager(ConfigurationsManager.class).getConfig(MessagesConfig.class);
+
+        if(permissions.length == 0) {
+            return true;
+        }
+
+        if(permissions.length > 1) {
+            for(var permission : permissions) {
+                if(sender.hasPermission(permission)) {
+                    return true;
+                }
+            }
+
+            sender.sendMessage(messagesConfig.getNoPermissionMessage());
+            return false;
+        }
+
+        var permission = permissions[0];
+        if(!sender.hasPermission(permission)) {
+            sender.sendMessage(messagesConfig.getNoPermissionMessage());
+            return false;
+        }
+
+        return true;
     }
 
 }

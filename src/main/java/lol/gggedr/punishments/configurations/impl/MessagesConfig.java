@@ -26,8 +26,29 @@ public class MessagesConfig implements Config {
     @ConfigField(path = "commands.kick.usage")
     private String kickCommandUsage = "&cUsage: /kick <player> [reason] [-s]";
 
+    @ConfigField(path = "commands.kick.success")
+    private String kickCommandSuccess = "&aSuccessfully kicked &e%player% &afor &e%reason%";
+
+    @ConfigField(path = "commands.kick.alert.public")
+    private String kickCommandAlertPublic = "&e%player% &ahas been kicked for &e%reason% &aby &e%issuer%";
+
+    @ConfigField(path = "commands.kick.alert.silent")
+    private String kickCommandAlertSilent = "&e%player% &ahas been kicked for &e%reason% &aby &e%issuer% &c(silent)";
+
     @ConfigField(path = "commands.mute.usage")
     private String muteCommandUsage = "&cUsage: /mute <player> [duration] [reason] [-s]";
+
+    @ConfigField(path = "commands.mute.success")
+    private String muteCommandSuccess = "&aSuccessfully muted &e%player% &afor &e%reason%";
+
+    @ConfigField(path = "commands.mute.alert.public")
+    private String muteCommandAlertPublic = "&e%player% &ahas been muted for &e%reason% &aby &e%issuer%";
+
+    @ConfigField(path = "commands.mute.alert.silent")
+    private String muteCommandAlertSilent = "&e%player% &ahas been muted for &e%reason% &aby &e%issuer% &c(silent)";
+
+    @ConfigField(path = "commands.mute.alert.target")
+    private String muteCommandAlertTarget = "&aYou have been muted for &e%reason% &aby &e%issuer%";
 
     @ConfigField(path = "commands.ban.usage")
     private String banCommandUsage = "&cUsage: /ban <player> [duration] [reason] [-s]";
@@ -91,6 +112,55 @@ public class MessagesConfig implements Config {
 
     public String getWarnCommandAlertTarget(String player, String reason, String issuer) {
         return StringUtils.colorize(warnCommandAlertTarget)
+                .replace("%player%", player)
+                .replace("%reason%", reason)
+                .replace("%issuer%", issuer);
+    }
+
+    public String getKickCommandSuccess(String player, String reason, String issuer) {
+        return StringUtils.colorize(kickCommandSuccess)
+                .replace("%player%", player)
+                .replace("%reason%", reason)
+                .replace("%issuer%", issuer);
+    }
+
+    public String getKickCommandAlertPublic(String player, String reason, String issuer) {
+        return StringUtils.colorize(kickCommandAlertPublic)
+                .replace("%player%", player)
+                .replace("%reason%", reason)
+                .replace("%issuer%", issuer);
+    }
+
+    public String getKickCommandAlertSilent(String player, String reason, String issuer) {
+        return StringUtils.colorize(kickCommandAlertSilent)
+                .replace("%player%", player)
+                .replace("%reason%", reason)
+                .replace("%issuer%", issuer);
+    }
+
+    public String getMuteCommandSuccess(String player, String reason, String issuer) {
+        return StringUtils.colorize(muteCommandSuccess)
+                .replace("%player%", player)
+                .replace("%reason%", reason)
+                .replace("%issuer%", issuer);
+    }
+
+    public String getMuteCommandAlertPublic(String player, String reason, String issuer) {
+        return StringUtils.colorize(muteCommandAlertPublic)
+                .replace("%player%", player)
+                .replace("%reason%", reason)
+                .replace("%issuer%", issuer);
+    }
+
+    public String getMuteCommandAlertSilent(String player, String reason, String issuer) {
+        return StringUtils.colorize(muteCommandAlertSilent)
+                .replace("%player%", player)
+                .replace("%reason%", reason)
+                .replace("%issuer%", issuer);
+    }
+
+    public String getMuteCommandAlertTarget(String player, String reason, String issuer) {
+        return StringUtils.colorize(muteCommandAlertTarget)
                 .replace("%player%", player)
                 .replace("%reason%", reason)
                 .replace("%issuer%", issuer);

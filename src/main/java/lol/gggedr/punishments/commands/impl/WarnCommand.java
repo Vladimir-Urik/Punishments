@@ -2,6 +2,9 @@ package lol.gggedr.punishments.commands.impl;
 
 import lol.gggedr.punishments.commands.Command;
 import lol.gggedr.punishments.commands.annotations.CommandInfo;
+import lol.gggedr.punishments.cons.Punishment;
+import lol.gggedr.punishments.enums.PunishmentType;
+import lol.gggedr.punishments.managers.impl.PunishmentsManager;
 import lol.gggedr.punishments.utils.PunishmentsUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -19,7 +22,11 @@ public class WarnCommand implements Command {
         if(extractedDetails == null) return;
 
         var target = Bukkit.getPlayer(extractedDetails.nickname());
-        // TODO: Write to database
+
+        var punishment = new Punishment("", extractedDetails.nickname(), extractedDetails.reason(), sender.getName(), System.currentTimeMillis(), -1L, PunishmentType.WARN, true, "-", "-");
+        punishment.insert();
+        var manager = getManager(PunishmentsManager.class);
+        manager.addPunishment(punishment);
 
         var messageConfig = getMessagesConfig();
         if(extractedDetails.silent()) {

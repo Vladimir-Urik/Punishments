@@ -3,6 +3,7 @@ package lol.gggedr.punishments;
 import lol.gggedr.punishments.managers.Managers;
 import lol.gggedr.punishments.managers.impl.ConfigurationsManager;
 import lol.gggedr.punishments.managers.impl.DatabaseManager;
+import lol.gggedr.punishments.managers.impl.PunishmentsManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class PunishmentsPlugin extends JavaPlugin {
@@ -15,6 +16,7 @@ public final class PunishmentsPlugin extends JavaPlugin {
 
         Managers.register(ConfigurationsManager.class);
         Managers.register(DatabaseManager.class);
+        Managers.register(PunishmentsManager.class);
 
         Managers.onEnable();
     }

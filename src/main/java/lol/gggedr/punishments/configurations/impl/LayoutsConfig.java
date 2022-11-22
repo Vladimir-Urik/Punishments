@@ -4,6 +4,7 @@ import lol.gggedr.punishments.configurations.Config;
 import lol.gggedr.punishments.configurations.annotations.ConfigField;
 import lol.gggedr.punishments.configurations.annotations.ConfigInfo;
 import lol.gggedr.punishments.utils.StringUtils;
+import lol.gggedr.punishments.utils.TimeUtils;
 
 import java.util.List;
 
@@ -45,6 +46,23 @@ public class LayoutsConfig implements Config {
             "&cKicked by: &f%issuer%"
     );
 
+    @ConfigField(path = "mute.permanent")
+    private List<String> mutePermanent = List.of(
+            "&cYou have been muted in this server.",
+            "&c ",
+            "&cReason: &f%reason%",
+            "&cMuted by: &f%issuer%"
+    );
+
+    @ConfigField(path = "mute.temp")
+    private List<String> muteTemp = List.of(
+            "&cYou have been muted in this server.",
+            "&c ",
+            "&cReason: &f%reason%",
+            "&cMuted by: &f%issuer%",
+            "&cExpires in: &f%expires%"
+    );
+
     public String getAppeal() {
         return StringUtils.toString(appeal);
     }
@@ -56,11 +74,14 @@ public class LayoutsConfig implements Config {
                 .replace("%appeal%", getAppeal());
     }
 
-    public String getBanTemp(String reason, String issuer, String expires) {
+    public String getBanTemp(String reason, String issuer, long end) {
+        var expireIn = end - System.currentTimeMillis();
+        var formattedExpiration = TimeUtils.formatExpiration(expireIn);
+
         return StringUtils.toString(banTemp)
                 .replace("%reason%", reason)
                 .replace("%issuer%", issuer)
-                .replace("%expires%", expires)
+                .replace("%expires%", formattedExpiration)
                 .replace("%appeal%", getAppeal());
     }
 
@@ -68,6 +89,22 @@ public class LayoutsConfig implements Config {
         return StringUtils.toString(kick)
                 .replace("%reason%", reason)
                 .replace("%issuer%", issuer);
+    }
+
+    public String getMutePermanent(String reason, String issuer) {
+        return StringUtils.toString(mutePermanent)
+                .replace("%reason%", reason)
+                .replace("%issuer%", issuer);
+    }
+
+    public String getMuteTemp(String reason, String issuer, long end) {
+        var expireIn = end - System.currentTimeMillis();
+        var formattedExpiration = TimeUtils.formatExpiration(expireIn);
+
+        return StringUtils.toString(muteTemp)
+                .replace("%reason%", reason)
+                .replace("%issuer%", issuer)
+                .replace("%expires%", formattedExpiration);
     }
 
 }

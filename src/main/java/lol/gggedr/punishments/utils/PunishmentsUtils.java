@@ -9,6 +9,14 @@ import org.bukkit.command.CommandSender;
 
 public class PunishmentsUtils {
 
+    /**
+     * It extracts the punishment details from the command arguments
+     *
+     * @param sender The CommandSender who executed the command.
+     * @param args The arguments that the player has entered.
+     * @param command The command that was used to execute the command.
+     * @return A BasePunishmentDetails object.
+     */
     public static BasePunishmentDetails extractBasePunishmentDetails(CommandSender sender, String[] args, String command) {
         var messagesConfig = Managers.getManager(ConfigurationsManager.class).getConfig(MessagesConfig.class);
 
@@ -25,7 +33,7 @@ public class PunishmentsUtils {
             return null;
         }
 
-        var duration = 0L;
+        var duration = -1L;
         var reason = "-";
         var silent = false;
 
@@ -51,6 +59,12 @@ public class PunishmentsUtils {
         return new BasePunishmentDetails(nickname, reason, sender.getName(), duration, silent);
     }
 
+    /**
+     * If the sender has any of the permissions, return true, otherwise send the no permission message and return false
+     *
+     * @param sender The CommandSender that is executing the command.
+     * @return A boolean
+     */
     public static boolean hasPermissions(CommandSender sender, String... permissions) {
         var messagesConfig = Managers.getManager(ConfigurationsManager.class).getConfig(MessagesConfig.class);
 

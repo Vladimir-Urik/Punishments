@@ -22,9 +22,9 @@ public class PunishmentsManager implements Manager {
         task = Bukkit.getScheduler().runTaskTimerAsynchronously(getPlugin(), () -> {
             var punishmentsToExpire = getManager(DatabaseManager.class).getPunishmentsToExpire();
             punishmentsToExpire.forEach(punishment -> {
-                punishment.active(false);
-                punishment.unbannedBy("System");
-                punishment.unbannedReason("The punishment has expired.");
+                punishment.setActive(false);
+                punishment.setRemovedBy("System");
+                punishment.setRemoveReason("The punishment has expired.");
 
                 punishment.update();
                 punishments.removeIf(cachedValue -> cachedValue.getValue().getId().equals(punishment.getId()));
@@ -32,14 +32,14 @@ public class PunishmentsManager implements Manager {
 
             punishments.forEach((punishment) -> {
                 var value = punishment.getValue();
-                var player = Bukkit.getPlayer(value.nickname());
+                var player = Bukkit.getPlayer(value.getNickname());
 
                 if (player == null) return;
                 punishment.setTime(System.currentTimeMillis());
             });
 
             punishments.removeIf(punishmentCachedValue -> {
-                return punishmentCachedValue.isExpired() || !punishmentCachedValue.getValue().active();
+                return punishmentCachedValue.isExpired() || !punishmentCachedValue.getValue().isActive();
             });
         }, 0, 20);
     }
@@ -57,7 +57,7 @@ public class PunishmentsManager implements Manager {
     public void addPunishment(Punishment punishment) {
         punishments = punishments.stream().filter(cachedValue -> {
             var value = cachedValue.getValue();
-            return !value.nickname().equals(punishment.nickname()) && !value.type().equals(punishment.type());
+            return !value.getNickname().equals(punishment.getNickname()) && !value.getType().equals(punishment.getType());
         }).collect(Collectors.toList());
 
         punishments.add(new CachedValue<>(punishment, System.currentTimeMillis(), TimeUnit.MINUTES.toMillis(15)));
@@ -79,7 +79,7 @@ public class PunishmentsManager implements Manager {
      * @param type The type of punishment.
      */
     public void removePunishment(String nickname, PunishmentType type) {
-        punishments.removeIf(punishment -> punishment.getValue().nickname().equals(nickname) && punishment.getValue().type() == type);
+        punishments.removeIf(punishment -> punishment.getValue().getNickname().equals(nickname) && punishment.getValue().getType() == type);
     }
 
 
@@ -91,7 +91,7 @@ public class PunishmentsManager implements Manager {
      * @return A boolean value.
      */
     public boolean isPunished(String nickname, PunishmentType type) {
-        return punishments.stream().anyMatch(punishment -> punishment.getValue().nickname().equals(nickname) && punishment.getValue().type() == type);
+        return punishments.stream().anyMatch(punishment -> punishment.getValue().getNickname().equals(nickname) && punishment.getValue().getType() == type);
     }
 
     /**
@@ -104,7 +104,7 @@ public class PunishmentsManager implements Manager {
      */
     public CachedValue<Punishment> getPunishment(String nickname, PunishmentType type) {
         return punishments.stream()
-                .filter(punishment -> punishment.getValue().nickname().equals(nickname) && punishment.getValue().type() == type).findFirst()
+                .filter(punishment -> punishment.getValue().getNickname().equals(nickname) && punishment.getValue().getType() == type).findFirst()
                 .orElse(null);
     }
 
@@ -115,13 +115,21 @@ public class PunishmentsManager implements Manager {
      * @param nickname The nickname of the player to load punishments for.
      */
     public void loadPunishments(String nickname) {
-        if(punishments.stream().anyMatch(punishment -> punishment.getValue().nickname().equals(nickname))) {
+        if(punishments.stream().anyMatch(punishment -> punishment.getValue().getNickname().equals(nickname))) {
             return;
         }
 
         var databaseManager = getManager(DatabaseManager.class);
         var punishments = databaseManager.getActivePunishments(nickname);
         punishments.forEach(punishment -> this.punishments.add(new CachedValue<>(punishment, System.currentTimeMillis(), TimeUnit.MINUTES.toMillis(15))));
+    }
+
+    public Punishment getPlayerPunishment(String nickname, PunishmentType type) {
+        var punishment = getPunishment(nickname, type);
+        if(punishment != null) return punishment.getValue();
+
+        var databaseManager = getManager(DatabaseManager.class);
+        return databaseManager.getPunishment(nickname, type);
     }
 
 }

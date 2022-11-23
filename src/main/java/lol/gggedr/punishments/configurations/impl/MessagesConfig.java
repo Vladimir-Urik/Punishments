@@ -5,6 +5,8 @@ import lol.gggedr.punishments.configurations.annotations.ConfigField;
 import lol.gggedr.punishments.configurations.annotations.ConfigInfo;
 import lol.gggedr.punishments.utils.StringUtils;
 
+import java.util.HashMap;
+
 @ConfigInfo(fileName = "messages.yml")
 public class MessagesConfig implements Config {
 
@@ -54,19 +56,37 @@ public class MessagesConfig implements Config {
     private String banCommandUsage = "&cUsage: /ban <player> [duration] [reason] [-s]";
 
     @ConfigField(path = "commands.unmute.usage")
-    private String unmuteCommandUsage = "&cUsage: /unmute <player> [-s]";
+    private String unmuteCommandUsage = "&cUsage: /unmute <player> [reason]";
+
+    @ConfigField(path = "commands.unmute.success")
+    private String unmuteCommandSuccess = "&aSuccessfully unmuted &e%player% &afor &e%reason%";
+
+    @ConfigField(path = "commands.unmute.player-not-muted")
+    private String playerNotMuted = "&c%player% &cis not muted";
 
     @ConfigField(path = "commands.unban.usage")
-    private String unbanCommandUsage = "&cUsage: /unban <player> [-s]";
+    private String unbanCommandUsage = "&cUsage: /unban <player> [reason]";
+
+    @ConfigField(path = "commands.unban.success")
+    private String unbanCommandSuccess = "&aSuccessfully unbanned &e%player% &afor &e%reason%";
+
+    @ConfigField(path = "commands.unban.player-not-banned")
+    private String playerNotBanned = "&c%player% &cis not banned";
 
     @ConfigField(path = "commands.history.usage")
     private String historyCommandUsage = "&cUsage: /history <player>";
+
+    @ConfigField(path = "commands.history.no-history")
+    private String historyCommandNoHistory = "&c%player% has no history";
 
     @ConfigField(path = "no-permission")
     private String noPermissionMessage = "&cYou don't have permission to execute this command.";
 
     @ConfigField(path = "player-not-found")
     private String playerNotFoundMessage = "&cPlayer not found.";
+
+    @ConfigField(path = "only-players")
+    private String onlyPlayersMessage = "&cOnly players can execute this command.";
 
     public String getCommandUsage(String command) {
         return StringUtils.colorize(switch (command) {
@@ -164,5 +184,39 @@ public class MessagesConfig implements Config {
                 .replace("%player%", player)
                 .replace("%reason%", reason)
                 .replace("%issuer%", issuer);
+    }
+
+    public String getHistoryCommandNoHistory(String player) {
+        return StringUtils.colorize(historyCommandNoHistory)
+                .replace("%player%", player);
+    }
+
+    public String getOnlyPlayersMessage() {
+        return StringUtils.colorize(onlyPlayersMessage);
+    }
+
+    public String getUnbanCommandSuccess(String player, String reason) {
+        var placeholders = new HashMap<String, Object>();
+        placeholders.put("player", player);
+        placeholders.put("reason", reason);
+
+        return StringUtils.colorize(StringUtils.replacePlaceholders(unbanCommandSuccess, placeholders));
+    }
+
+    public String getPlayerNotBanned(String player) {
+        return StringUtils.colorize(playerNotBanned)
+                .replace("%player%", player);
+    }
+
+    public String getUnmuteCommandSuccess(String player, String reason) {
+        var placeholders = new HashMap<String, Object>();
+        placeholders.put("player", player);
+        placeholders.put("reason", reason);
+
+        return StringUtils.colorize(StringUtils.replacePlaceholders(unmuteCommandSuccess, placeholders));
+    }
+
+    public String getPlayerNotMuted(String player) {
+        return StringUtils.colorize(playerNotMuted).replace("%player%", player);
     }
 }

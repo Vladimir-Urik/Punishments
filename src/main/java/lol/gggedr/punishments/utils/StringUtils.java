@@ -25,8 +25,12 @@ public class StringUtils {
      * @return A string with the placeholders replaced with the values in the HashMap.
      */
     public static String replacePlaceholders(String string, HashMap<String, Object> placeholders) {
+        if(placeholders == null || placeholders.isEmpty()) return string;
+
         for(var entry : placeholders.entrySet()) {
-            string = string.replace("%"+ entry.getKey() +"%", entry.getValue().toString());
+            var placeholder = "%" + entry.getKey() + "%";
+            var value = entry.getValue() == null ? "-" : entry.getValue().toString();
+            string = string.replace(placeholder, value);
         }
 
         return string;

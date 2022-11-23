@@ -1,20 +1,13 @@
 package lol.gggedr.punishments.utils;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TimeUtils {
 
-    // Parse :
-    // 1d2h3m4s -> 1 day, 2 hours, 3 minutes, 4 seconds
-    // 20mo -> 20 months
-    // 1y -> 1 year
-    // 1w -> 1 week
-    // 1d -> 1 day
-    // 1h -> 1 hour
-    // 1m -> 1 minute
-    // 1s -> 1 second
     private static final Pattern TIME_PATTERN = Pattern.compile("(\\d+)([a-zA-Z]+)");
 
     public static boolean isStartWithTime(String string) {
@@ -78,7 +71,18 @@ public class TimeUtils {
             builder.append(seconds).append("s ");
         }
 
+        if(builder.length() == 0) {
+            builder.append("0s");
+        }
+
         return builder.toString();
+    }
+
+    public static String formatDate(long time) {
+        var date = new Date(time);
+        var format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+        return format.format(date);
     }
 
 }

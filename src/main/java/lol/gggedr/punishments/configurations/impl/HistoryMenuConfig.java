@@ -17,14 +17,17 @@ public class HistoryMenuConfig implements Config {
     private String title = "&cHistory of &c&l%player%";
 
     @ConfigField(path = "items.info.name")
-    private String infoItemName = "&c%type% &7- &c%reason%";
+    private String infoItemName = "&c&l%type%&7: &c%reason%";
 
     @ConfigField(path = "items.info.lore")
     private List<String> infoItemLore = List.of(
             "&7Punished by &c%issuer%",
             "&7Date: &c%date%",
             "&7Duration: &c%duration%",
-            "&7Active: &c%active%"
+            "&7Active: &c%active%",
+            "&7 ",
+            "&7Removed by: &c%removed_by%",
+            "&7Remove reason: &c%remove_reason%"
     );
 
     @ConfigField(path = "items.info.material")
@@ -61,11 +64,11 @@ public class HistoryMenuConfig implements Config {
     @ConfigField(path = "items.pagination.previous.custom-model-data")
     private int previousItemCustomModelData = 0;
 
-    public String getTitle() {
-        return title;
+    public String getTitle(String player) {
+        return StringUtils.colorize(title).replace("%player%", player);
     }
 
-    public ItemStack getInfoItem(String type, String reason, String issuer, String date, String duration, boolean active) {
+    public ItemStack getInfoItem(String type, String reason, String issuer, String date, String duration, boolean active, String id, String removedBy, String unbanReason) {
         var placeholders = new HashMap<String, Object>();
         placeholders.put("type", type);
         placeholders.put("reason", reason);
@@ -73,6 +76,9 @@ public class HistoryMenuConfig implements Config {
         placeholders.put("date", date);
         placeholders.put("duration", duration);
         placeholders.put("active", active ? "Yes" : "No");
+        placeholders.put("id", id);
+        placeholders.put("removed_by", removedBy);
+        placeholders.put("remove_reason", unbanReason);
 
         return buildItem(infoItemMaterial, infoItemName, infoItemLore, infoItemCustomModelData, placeholders);
     }
@@ -90,7 +96,7 @@ public class HistoryMenuConfig implements Config {
         var meta = item.getItemMeta();
         assert meta != null : "Item meta is null.";
 
-        meta.setDisplayName(StringUtils.colorize(name));
+        meta.setDisplayName(StringUtils.replacePlaceholders(StringUtils.colorize(name), placeholders));
         meta.setLore(StringUtils.replacePlaceholders(StringUtils.colorize(lore), placeholders));
         meta.setCustomModelData(customModelData);
 

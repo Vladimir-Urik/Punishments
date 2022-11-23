@@ -62,10 +62,10 @@ abstract class TestPluginTask extends DefaultTask {
 
         System.out.println("Starting server...")
         project.javaexec {
-            args = [serverFile.name, '--nogui']
+            args = ['-jar', serverFile.name, '--nogui']
             workingDir = serverFolder
             standardInput = System.in
-            mainClass.set("-jar")
+            mainClass.set("-Dfile.encoding=UTF-8")
         }
 
         System.out.println("Server stopped!")

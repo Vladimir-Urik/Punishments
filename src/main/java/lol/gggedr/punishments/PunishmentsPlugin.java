@@ -17,6 +17,7 @@ public final class PunishmentsPlugin extends JavaPlugin {
         Managers.register(PunishmentsManager.class);
         Managers.register(ListenersManager.class);
         Managers.register(CommandsManager.class);
+        Managers.register(MenusManager.class);
 
         Managers.onEnable();
     }

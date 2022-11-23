@@ -13,13 +13,13 @@ public class LayoutsConfig implements Config {
 
     @ConfigField(path = "appeal")
     private List<String> appeal = List.of(
-            "&9Do you want to appeal your ban?",
+            "&9Do you want to appeal your punishment?",
             "&9Discord: &fhttps://discord.gg/invite"
     );
 
     @ConfigField(path = "ban.permanent")
     private List<String> banPermanent = List.of(
-            "&cYou have been banned from this server.",
+            "&cYOU HAVE BEEN BANNED FROM &nSERVERNAME",
             "&c ",
             "&cReason: &f%reason%",
             "&cBanned by: &f%issuer%",
@@ -29,7 +29,7 @@ public class LayoutsConfig implements Config {
 
     @ConfigField(path = "ban.temp")
     private List<String> banTemp = List.of(
-            "&cYou have been banned from this server.",
+            "&cYOU HAVE BEEN TEMPORARILY BANNED FROM &nSERVERNAME",
             "&c ",
             "&cReason: &f%reason%",
             "&cBanned by: &f%issuer%",
@@ -40,7 +40,7 @@ public class LayoutsConfig implements Config {
 
     @ConfigField(path = "kick")
     private List<String> kick = List.of(
-            "&cYou have been kicked from this server.",
+            "&cYOU HAVE BEEN KICKED FROM &nSERVERNAME",
             "&c ",
             "&cReason: &f%reason%",
             "&cKicked by: &f%issuer%"
@@ -48,19 +48,23 @@ public class LayoutsConfig implements Config {
 
     @ConfigField(path = "mute.permanent")
     private List<String> mutePermanent = List.of(
-            "&cYou have been muted in this server.",
+            "&cYOU HAVE A PERMANENT MUTE!",
             "&c ",
             "&cReason: &f%reason%",
-            "&cMuted by: &f%issuer%"
+            "&cMuted by: &f%issuer%",
+            "&c ",
+            "&f%appeal%"
     );
 
     @ConfigField(path = "mute.temp")
     private List<String> muteTemp = List.of(
-            "&cYou have been muted in this server.",
+            "&cYOU HAVE A TEMPORARY MUTE!",
             "&c ",
             "&cReason: &f%reason%",
             "&cMuted by: &f%issuer%",
-            "&cExpires in: &f%expires%"
+            "&cExpires in: &f%expires%",
+            "&c ",
+            "&f%appeal%"
     );
 
     public String getAppeal() {
@@ -88,13 +92,15 @@ public class LayoutsConfig implements Config {
     public String getKick(String reason, String issuer) {
         return StringUtils.toString(kick)
                 .replace("%reason%", reason)
-                .replace("%issuer%", issuer);
+                .replace("%issuer%", issuer)
+                .replace("%appeal%", getAppeal());
     }
 
     public String getMutePermanent(String reason, String issuer) {
         return StringUtils.toString(mutePermanent)
                 .replace("%reason%", reason)
-                .replace("%issuer%", issuer);
+                .replace("%issuer%", issuer)
+                .replace("%appeal%", getAppeal());
     }
 
     public String getMuteTemp(String reason, String issuer, long end) {
@@ -104,7 +110,8 @@ public class LayoutsConfig implements Config {
         return StringUtils.toString(muteTemp)
                 .replace("%reason%", reason)
                 .replace("%issuer%", issuer)
-                .replace("%expires%", formattedExpiration);
+                .replace("%expires%", formattedExpiration)
+                .replace("%appeal%", getAppeal());
     }
 
 }

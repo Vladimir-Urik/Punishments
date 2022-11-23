@@ -20,8 +20,8 @@ public final class Punishment {
     private final long end;
     private final PunishmentType type;
     private boolean active;
-    private String unbannedBy;
-    private String unbannedReason;
+    private String removedBy;
+    private String removeReason;
 
     private List<String> updates = new ArrayList<>();
 
@@ -34,8 +34,8 @@ public final class Punishment {
             long end,
             PunishmentType type,
             boolean active,
-            String unbannedBy,
-            String unbannedReason
+            String removedBy,
+            String removeReason
     ) {
         this.id = _id;
         this.nickname = nickname;
@@ -45,8 +45,8 @@ public final class Punishment {
         this.end = end;
         this.type = type;
         this.active = active;
-        this.unbannedBy = unbannedBy;
-        this.unbannedReason = unbannedReason;
+        this.removedBy = removedBy;
+        this.removeReason = removeReason;
     }
 
     /**
@@ -62,8 +62,8 @@ public final class Punishment {
 
         var updatedDocument = new Document();
         updatedDocument.put("active", false);
-        updatedDocument.put("unbannedBy", this.issuer);
-        updatedDocument.put("unbannedReason", "Replaced by a new punishment.");
+        updatedDocument.put("removedBy", this.issuer);
+        updatedDocument.put("removedReason", "Replaced by a new punishment.");
 
         var document = new Document();
         document.put("$set", updatedDocument);
@@ -115,8 +115,8 @@ public final class Punishment {
                 .append("end", end)
                 .append("type", type.name())
                 .append("active", active)
-                .append("unbannedBy", unbannedBy)
-                .append("unbannedReason", unbannedReason);
+                .append("removedBy", removedBy)
+                .append("removeReason", removeReason);
     }
 
     /**
@@ -135,8 +135,8 @@ public final class Punishment {
                 document.getLong("end"),
                 PunishmentType.valueOf(document.getString("type")),
                 document.getBoolean("active"),
-                document.getString("unbannedBy"),
-                document.getString("unbannedReason")
+                document.getString("removedBy"),
+                document.getString("removeReason")
         );
     }
 
@@ -165,7 +165,7 @@ public final class Punishment {
      *
      * @return The nickname of the user.
      */
-    public String nickname() {
+    public String getNickname() {
         return nickname;
     }
 
@@ -174,7 +174,7 @@ public final class Punishment {
      *
      * @return The reason for the exception.
      */
-    public String reason() {
+    public String getReason() {
         return reason;
     }
 
@@ -183,7 +183,7 @@ public final class Punishment {
      *
      * @return The issuer of the card.
      */
-    public String issuer() {
+    public String getIssuer() {
         return issuer;
     }
 
@@ -192,7 +192,7 @@ public final class Punishment {
      *
      * @return The start time of the stopwatch.
      */
-    public long start() {
+    public long getStart() {
         return start;
     }
 
@@ -201,7 +201,7 @@ public final class Punishment {
      *
      * @return The end time of the event.
      */
-    public long end() {
+    public long getEnd() {
         return end;
     }
 
@@ -210,7 +210,7 @@ public final class Punishment {
      *
      * @return The type of punishment.
      */
-    public PunishmentType type() {
+    public PunishmentType getType() {
         return type;
     }
 
@@ -219,7 +219,7 @@ public final class Punishment {
      *
      * @return The boolean value of the variable active.
      */
-    public boolean active() {
+    public boolean isActive() {
         return active;
     }
 
@@ -228,47 +228,50 @@ public final class Punishment {
      *
      * @param active This is a boolean value that determines whether the user is active or not.
      */
-    public void active(boolean active) {
+    public void setActive(boolean active) {
         this.active = active;
         update("active");
     }
 
     /**
-     * This function returns the name of the user who unbanned the user
+     * > This function returns the name of the user who removed the file
      *
-     * @return The name of the user who unbanned the user.
+     * @return The removedBy variable is being returned.
      */
-    public String unbannedBy() {
-        return unbannedBy;
+    public String getRemovedBy() {
+        return removedBy;
     }
 
-    /**
-     * This function sets the value of the variable `unbannedBy` to the value of the parameter `unbannedBy`
-     *
-     * @param unbannedBy The name of the user who unbanned the user.
-     */
-    public void unbannedBy(String unbannedBy) {
-        this.unbannedBy = unbannedBy;
-        update("unbannedBy");
-    }
 
     /**
-     * It returns the reason why the user was unbanned
+     * This function sets the removedBy field to the value of the removedBy parameter.
      *
-     * @return The unbanned reason.
+     * @param removedBy The name of the user who removed the item.
      */
-    public String unbannedReason() {
-        return unbannedReason;
+    public void setRemovedBy(String removedBy) {
+        this.removedBy = removedBy;
+        update("removedBy");
     }
 
+
     /**
-     * This function sets the reason for the user being unbanned
+     * This function returns the reason for the removal of the user
      *
-     * @param unbannedReason The reason for the unban.
+     * @return The removeReason variable is being returned.
      */
-    public void unbannedReason(String unbannedReason) {
-        this.unbannedReason = unbannedReason;
-        update("unbannedReason");
+    public String getRemoveReason() {
+        return removeReason;
+    }
+
+
+    /**
+     * This function sets the removeReason variable to the value of the removeReason parameter.
+     *
+     * @param removeReason The reason for the removal.
+     */
+    public void setRemoveReason(String removeReason) {
+        this.removeReason = removeReason;
+        update("removeReason");
     }
 
     private void update(String field) {

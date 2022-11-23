@@ -22,11 +22,11 @@ public class ChatListener implements Listener {
         event.setCancelled(true);
 
         var punishment = manager.getPunishment(player.getName(), PunishmentType.MUTE).getValue();
-        var reason = punishment.reason();
-        var permanent = punishment.end() == -1;
+        var reason = punishment.getReason();
+        var permanent = punishment.getEnd() == -1;
 
         var config = Managers.getManager(ConfigurationsManager.class).getConfig(LayoutsConfig.class);
-        var message = permanent ? config.getMutePermanent(reason, punishment.issuer()) : config.getMuteTemp(reason, punishment.issuer(), punishment.end());
+        var message = permanent ? config.getMutePermanent(reason, punishment.getIssuer()) : config.getMuteTemp(reason, punishment.getIssuer(), punishment.getEnd());
 
         player.sendMessage(message);
     }

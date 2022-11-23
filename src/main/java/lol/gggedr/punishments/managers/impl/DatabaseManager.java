@@ -5,6 +5,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import lol.gggedr.punishments.configurations.impl.DatabaseConfig;
 import lol.gggedr.punishments.cons.Punishment;
+import lol.gggedr.punishments.enums.PunishmentType;
 import lol.gggedr.punishments.managers.Manager;
 import lol.gggedr.punishments.managers.Managers;
 import org.bson.Document;
@@ -99,7 +100,12 @@ public class DatabaseManager implements Manager {
      */
     public List<Punishment> getPunishmentsToExpire() {
         var query = new BasicDBObject("end", new BasicDBObject("$lt", System.currentTimeMillis())).append("active", true);
-        return preProcessPunishmentsQuery(query).stream().filter(punishment -> punishment.end() != -1L).toList();
+        return preProcessPunishmentsQuery(query).stream().filter(punishment -> punishment.getEnd() != -1L).toList();
+    }
+
+    public Punishment getPunishment(String nickname, PunishmentType type) {
+        var query = new BasicDBObject("nickname", nickname).append("type", type.name()).append("active", true);
+        return preProcessPunishmentsQuery(query).stream().findFirst().orElse(null);
     }
 
     /**

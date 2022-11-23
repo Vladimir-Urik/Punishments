@@ -2,3 +2,4 @@ name: '${name}'
 version: '${version}-${buildNumber}'
 main: lol.gggedr.punishments.PunishmentsPlugin
 authors: [ GGGEDR ]
+api-version: 1.19

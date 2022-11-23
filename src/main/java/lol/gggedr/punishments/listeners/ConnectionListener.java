@@ -22,11 +22,11 @@ public class ConnectionListener implements Listener {
         if (!manager.isPunished(player, PunishmentType.BAN)) return;
 
         var punishment = manager.getPunishment(player, PunishmentType.BAN).getValue();
-        var reason = punishment.reason();
-        var permanent = punishment.end() == -1;
+        var reason = punishment.getReason();
+        var permanent = punishment.getEnd() == -1;
 
         var config = Managers.getManager(ConfigurationsManager.class).getConfig(LayoutsConfig.class);
-        var message = permanent ? config.getBanPermanent(reason, punishment.issuer()) : config.getBanTemp(reason, punishment.issuer(), punishment.end());
+        var message = permanent ? config.getBanPermanent(reason, punishment.getIssuer()) : config.getBanTemp(reason, punishment.getIssuer(), punishment.getEnd());
 
         event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED, message);
     }

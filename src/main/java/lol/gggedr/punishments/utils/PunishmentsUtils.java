@@ -34,11 +34,11 @@ public class PunishmentsUtils {
         }
 
         var duration = -1L;
-        var reason = "-";
+        StringBuilder reason = new StringBuilder();
         var silent = false;
 
         if(args.length == 1) {
-            return new BasePunishmentDetails(nickname, reason, sender.getName(), duration, silent);
+            return new BasePunishmentDetails(nickname, reason.toString(), sender.getName(), duration, silent);
         }
 
         for(int i = 1; i < args.length; i++) {
@@ -53,10 +53,15 @@ public class PunishmentsUtils {
                 duration = TimeUtils.parseTime(arg);
                 continue;
             }
-            reason = arg;
+
+            if(reason.length() > 0) {
+                reason.append(" ");
+            }
+            reason.append(arg);
         }
 
-        return new BasePunishmentDetails(nickname, reason, sender.getName(), duration, silent);
+        var finalReason = reason.length() == 0 ? "-" : reason.toString();
+        return new BasePunishmentDetails(nickname, finalReason, sender.getName(), duration, silent);
     }
 
     /**

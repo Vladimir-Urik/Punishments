@@ -11,7 +11,7 @@ public class DatabaseConfig implements Config {
     private String host = "localhost";
 
     @ConfigField(path = "port")
-    private int port = 3306;
+    private int port = 27017;
 
     @ConfigField(path = "database")
     private String database = "punishments";

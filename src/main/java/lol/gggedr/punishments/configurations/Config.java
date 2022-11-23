@@ -3,10 +3,13 @@ package lol.gggedr.punishments.configurations;
 import lol.gggedr.punishments.PunishmentsPlugin;
 import lol.gggedr.punishments.configurations.annotations.ConfigField;
 import lol.gggedr.punishments.configurations.annotations.ConfigInfo;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public interface Config {
 
@@ -52,18 +55,32 @@ public interface Config {
         }
 
         var yaml = YamlConfiguration.loadConfiguration(file);
-        var fields = Arrays.stream(this.getClass().getFields())
+        var fields = Arrays.stream(this.getClass().getDeclaredFields())
                 .filter((field) -> field.isAnnotationPresent(ConfigField.class)).toList();
 
+        AtomicBoolean isUpdated = new AtomicBoolean(false);
         fields.forEach((field) -> {
             try {
                 var annotation = field.getAnnotation(ConfigField.class);
 
+                field.setAccessible(true);
                 var path = annotation.path();
                 var defaultValue = field.get(this);
 
                 if(!yaml.contains(path)) {
-                    yaml.set(path, defaultValue);
+                    if(defaultValue.getClass().isAssignableFrom(Material.class)) {
+                        yaml.set(path, defaultValue.toString());
+                    } else {
+                        yaml.set(path, defaultValue);
+                    }
+
+                    isUpdated.set(true);
+                }
+
+                if(field.getType().isAssignableFrom(Material.class)) {
+                    var material = Material.matchMaterial(yaml.getString(path));
+                    field.set(this, material);
+                    return;
                 }
 
                 field.set(this, yaml.get(path));
@@ -71,6 +88,14 @@ public interface Config {
                 e.printStackTrace();
             }
         });
+
+        if(isUpdated.get()) {
+            try {
+                yaml.save(file);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
 }

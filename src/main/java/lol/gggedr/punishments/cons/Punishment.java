@@ -1,16 +1,15 @@
 package lol.gggedr.punishments.cons;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import lol.gggedr.punishments.enums.PunishmentType;
 import lol.gggedr.punishments.managers.Managers;
 import lol.gggedr.punishments.managers.impl.DatabaseManager;
-
-import java.util.Objects;
+import org.bson.Document;
+import org.bson.types.ObjectId;
 
 public final class Punishment {
 
-    private String _id;
+    private ObjectId id;
     private final String nickname;
     private final String reason;
     private final String issuer;
@@ -22,7 +21,7 @@ public final class Punishment {
     private String unbannedReason;
 
     public Punishment(
-            String _id,
+            ObjectId _id,
             String nickname,
             String reason,
             String issuer,
@@ -33,7 +32,7 @@ public final class Punishment {
             String unbannedBy,
             String unbannedReason
     ) {
-        this._id = _id;
+        this.id = _id;
         this.nickname = nickname;
         this.reason = reason;
         this.issuer = issuer;
@@ -50,19 +49,7 @@ public final class Punishment {
      */
     public void insert() {
         var collection = Managers.getManager(DatabaseManager.class).getCollection();
-        var result = collection.insert(new BasicDBObject()
-                .append("nickname", nickname)
-                .append("reason", reason)
-                .append("issuer", issuer)
-                .append("start", start)
-                .append("end", end)
-                .append("type", type.name())
-                .append("active", active)
-                .append("unbannedBy", unbannedBy)
-                .append("unbannedReason", unbannedReason)
-        );
-
-        this._id = (String) result.getUpsertedId();
+        collection.insertOne(toDocument());
     }
 
     /**
@@ -70,7 +57,7 @@ public final class Punishment {
      */
     public void update() {
         var collection = Managers.getManager(DatabaseManager.class).getCollection();
-        collection.update(new BasicDBObject("_id", _id), new BasicDBObject()
+        collection.updateOne(new BasicDBObject("_id", id), new BasicDBObject()
                 .append("nickname", nickname)
                 .append("reason", reason)
                 .append("issuer", issuer)
@@ -83,24 +70,38 @@ public final class Punishment {
         );
     }
 
+    public Document toDocument() {
+        return new Document()
+                .append("_id", id)
+                .append("nickname", nickname)
+                .append("reason", reason)
+                .append("issuer", issuer)
+                .append("start", start)
+                .append("end", end)
+                .append("type", type.name())
+                .append("active", active)
+                .append("unbannedBy", unbannedBy)
+                .append("unbannedReason", unbannedReason);
+    }
+
     /**
-     * It takes a DBObject and returns a Punishment object
+     * It takes a document from the database and converts it into a Punishment object
      *
-     * @param object The document from the database
+     * @param document The document that you want to convert to a Punishment object.
      * @return A new Punishment object.
      */
-    public static Punishment fromDocument(DBObject object) {
+    public static Punishment fromDocument(Document document) {
         return new Punishment(
-                (String) object.get("_id"),
-                (String) object.get("nickname"),
-                (String) object.get("reason"),
-                (String) object.get("issuer"),
-                (long) object.get("start"),
-                (long) object.get("end"),
-                PunishmentType.valueOf((String) object.get("type")),
-                (boolean) object.get("active"),
-                (String) object.get("unbannedBy"),
-                (String) object.get("unbannedReason")
+                document.getObjectId("_id"),
+                document.getString("nickname"),
+                document.getString("reason"),
+                document.getString("issuer"),
+                document.getLong("start"),
+                document.getLong("end"),
+                PunishmentType.valueOf(document.getString("type")),
+                document.getBoolean("active"),
+                document.getString("unbannedBy"),
+                document.getString("unbannedReason")
         );
     }
 
@@ -112,7 +113,7 @@ public final class Punishment {
      */
     public void delete() {
         var collection = Managers.getManager(DatabaseManager.class).getCollection();
-        collection.remove(new BasicDBObject("_id", _id));
+        collection.deleteOne(new BasicDBObject("_id", id));
     }
 
     /**
@@ -120,8 +121,8 @@ public final class Punishment {
      *
      * @return The _id of the document.
      */
-    public String _id() {
-        return _id;
+    public ObjectId getId() {
+        return id;
     }
 
     /**

@@ -1,32 +1,29 @@
 package lol.gggedr.punishments.managers.impl;
 
 import com.mongodb.*;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import lol.gggedr.punishments.configurations.impl.DatabaseConfig;
 import lol.gggedr.punishments.cons.Punishment;
-import lol.gggedr.punishments.enums.PunishmentType;
 import lol.gggedr.punishments.managers.Manager;
 import lol.gggedr.punishments.managers.Managers;
+import org.bson.Document;
 
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseManager implements Manager {
 
     private MongoClient client;
-    private DB database;
-    private DBCollection collection;
+    private MongoDatabase database;
+    private MongoCollection<Document> collection;
 
     @Override
     public void onEnable() {
         var config = Managers.getManager(ConfigurationsManager.class).getConfig(DatabaseConfig.class);
-        try {
-            client = new MongoClient(new MongoClientURI(craftUrl(config)));
-            database = client.getDB(config.getDatabase());
-            collection = database.getCollection(config.getCollection());
-        } catch (UnknownHostException e) {
-            throw new RuntimeException(e);
-        }
+        client = new MongoClient(new MongoClientURI(craftUrl(config)));
+        database = client.getDatabase(config.getDatabase());
+        collection = database.getCollection(config.getCollection());
     }
 
     @Override
@@ -49,7 +46,7 @@ public class DatabaseManager implements Manager {
      *
      * @return The collection object.
      */
-    public DBCollection getCollection() {
+    public MongoCollection<Document> getCollection() {
         return collection;
     }
 
@@ -58,7 +55,7 @@ public class DatabaseManager implements Manager {
      *
      * @return The database object.
      */
-    public DB getDatabase() {
+    public MongoDatabase getDatabase() {
         return database;
     }
 
@@ -113,11 +110,10 @@ public class DatabaseManager implements Manager {
      */
     private List<Punishment> preProcessPunishmentsQuery(BasicDBObject query) {
         var punishments = new ArrayList<Punishment>();
-        try (var result = collection.find(query)) {
-            while (result.hasNext()) {
-                var punishment = result.next();
-                punishments.add(Punishment.fromDocument(punishment));
-            }
+
+        var result = collection.find(query);
+        for (var document : result) {
+            punishments.add(Punishment.fromDocument(document));
         }
 
         return punishments;

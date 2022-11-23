@@ -6,6 +6,7 @@ import lol.gggedr.punishments.cons.Punishment;
 import lol.gggedr.punishments.enums.PunishmentType;
 import lol.gggedr.punishments.managers.impl.PunishmentsManager;
 import lol.gggedr.punishments.utils.PunishmentsUtils;
+import org.bson.types.ObjectId;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
@@ -23,7 +24,7 @@ public class KickCommand implements Command {
 
         var target = Bukkit.getPlayer(extractedDetails.nickname());
 
-        var punishment = new Punishment("", extractedDetails.nickname(), extractedDetails.reason(), sender.getName(), System.currentTimeMillis(), -1L, PunishmentType.KICK, true, "-", "-");
+        var punishment = new Punishment(new ObjectId(), extractedDetails.nickname(), extractedDetails.reason(), sender.getName(), System.currentTimeMillis(), -1L, PunishmentType.KICK, true, "-", "-");
         punishment.insert();
         var manager = getManager(PunishmentsManager.class);
         manager.addPunishment(punishment);

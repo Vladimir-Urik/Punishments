@@ -26,7 +26,7 @@ public class PunishmentsManager implements Manager {
                 punishment.unbannedReason("The punishment has expired.");
 
                 punishment.update();
-                punishments.removeIf(cachedValue -> cachedValue.getValue()._id().equals(punishment._id()));
+                punishments.removeIf(cachedValue -> cachedValue.getValue().getId().equals(punishment.getId()));
             });
 
             punishments.forEach((punishment) -> {

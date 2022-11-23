@@ -6,6 +6,7 @@ import lol.gggedr.punishments.cons.Punishment;
 import lol.gggedr.punishments.enums.PunishmentType;
 import lol.gggedr.punishments.managers.impl.PunishmentsManager;
 import lol.gggedr.punishments.utils.PunishmentsUtils;
+import org.bson.types.ObjectId;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
@@ -26,7 +27,7 @@ public class MuteCommand implements Command {
 
         var target = Bukkit.getPlayer(extractedDetails.nickname());
 
-        var punishment = new Punishment("", extractedDetails.nickname(), extractedDetails.reason(), sender.getName(), System.currentTimeMillis(), (extractedDetails.isPermanent() ? -1L : System.currentTimeMillis() + extractedDetails.duration()), PunishmentType.MUTE, true, "-", "-");
+        var punishment = new Punishment(new ObjectId(), extractedDetails.nickname(), extractedDetails.reason(), sender.getName(), System.currentTimeMillis(), (extractedDetails.isPermanent() ? -1L : System.currentTimeMillis() + extractedDetails.duration()), PunishmentType.MUTE, true, "-", "-");
         punishment.insert();
         var manager = getManager(PunishmentsManager.class);
         manager.addPunishment(punishment);

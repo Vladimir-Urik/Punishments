@@ -26,7 +26,7 @@ public class StringUtils {
      */
     public static String replacePlaceholders(String string, HashMap<String, Object> placeholders) {
         for(var entry : placeholders.entrySet()) {
-            string = string.replace(entry.getKey(), entry.getValue().toString());
+            string = string.replace("%"+ entry.getKey() +"%", entry.getValue().toString());
         }
 
         return string;

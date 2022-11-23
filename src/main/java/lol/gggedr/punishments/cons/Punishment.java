@@ -7,6 +7,9 @@ import lol.gggedr.punishments.managers.impl.DatabaseManager;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class Punishment {
 
     private ObjectId id;
@@ -19,6 +22,8 @@ public final class Punishment {
     private boolean active;
     private String unbannedBy;
     private String unbannedReason;
+
+    private List<String> updates = new ArrayList<>();
 
     public Punishment(
             ObjectId _id,
@@ -49,6 +54,21 @@ public final class Punishment {
      */
     public void insert() {
         var collection = Managers.getManager(DatabaseManager.class).getCollection();
+
+        var query = new BasicDBObject();
+        query.put("nickname", nickname);
+        query.put("type", type.name());
+        query.put("active", true);
+
+        var updatedDocument = new Document();
+        updatedDocument.put("active", false);
+        updatedDocument.put("unbannedBy", this.issuer);
+        updatedDocument.put("unbannedReason", "Replaced by a new punishment.");
+
+        var document = new Document();
+        document.put("$set", updatedDocument);
+        collection.updateMany(query, document);
+
         collection.insertOne(toDocument());
     }
 
@@ -57,17 +77,32 @@ public final class Punishment {
      */
     public void update() {
         var collection = Managers.getManager(DatabaseManager.class).getCollection();
-        collection.updateOne(new BasicDBObject("_id", id), new BasicDBObject()
-                .append("nickname", nickname)
-                .append("reason", reason)
-                .append("issuer", issuer)
-                .append("start", start)
-                .append("end", end)
-                .append("type", type.name())
-                .append("active", active)
-                .append("unbannedBy", unbannedBy)
-                .append("unbannedReason", unbannedReason)
-        );
+
+        var query = new BasicDBObject("_id", id);
+        var update = new BasicDBObject("$set", toUpdateDocument());
+
+        collection.findOneAndUpdate(query, update);
+    }
+
+    /**
+     * It creates a new document, iterates over the updates list, and adds each field to the document
+     *
+     * @return A Document object that contains the updates to the object.
+     */
+    public Document toUpdateDocument() {
+        var document = new Document();
+        for(var update : updates) {
+            try {
+                var field = getClass().getDeclaredField(update);
+                field.setAccessible(true);
+                document.append(update, field.get(this));
+            } catch (IllegalAccessException | NoSuchFieldException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        updates.clear();
+        return document;
     }
 
     public Document toDocument() {
@@ -195,6 +230,7 @@ public final class Punishment {
      */
     public void active(boolean active) {
         this.active = active;
+        update("active");
     }
 
     /**
@@ -213,6 +249,7 @@ public final class Punishment {
      */
     public void unbannedBy(String unbannedBy) {
         this.unbannedBy = unbannedBy;
+        update("unbannedBy");
     }
 
     /**
@@ -231,6 +268,12 @@ public final class Punishment {
      */
     public void unbannedReason(String unbannedReason) {
         this.unbannedReason = unbannedReason;
+        update("unbannedReason");
     }
 
+    private void update(String field) {
+        if(!updates.contains(field)) {
+            updates.add(field);
+        }
+    }
 }

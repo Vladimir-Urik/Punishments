@@ -10,11 +10,12 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class PunishmentsManager implements Manager {
 
     private BukkitTask task;
-    private final List<CachedValue<Punishment>> punishments = new ArrayList<>();
+    private List<CachedValue<Punishment>> punishments = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -54,6 +55,11 @@ public class PunishmentsManager implements Manager {
      * @param punishment The punishment object to add to the cache.
      */
     public void addPunishment(Punishment punishment) {
+        punishments = punishments.stream().filter(cachedValue -> {
+            var value = cachedValue.getValue();
+            return !value.nickname().equals(punishment.nickname()) && !value.type().equals(punishment.type());
+        }).collect(Collectors.toList());
+
         punishments.add(new CachedValue<>(punishment, System.currentTimeMillis(), TimeUnit.MINUTES.toMillis(15)));
     }
 

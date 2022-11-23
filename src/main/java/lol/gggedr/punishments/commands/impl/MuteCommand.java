@@ -5,6 +5,7 @@ import lol.gggedr.punishments.commands.annotations.CommandInfo;
 import lol.gggedr.punishments.cons.Punishment;
 import lol.gggedr.punishments.enums.PunishmentType;
 import lol.gggedr.punishments.managers.impl.PunishmentsManager;
+import lol.gggedr.punishments.utils.BukkitUtils;
 import lol.gggedr.punishments.utils.PunishmentsUtils;
 import org.bson.types.ObjectId;
 import org.bukkit.Bukkit;
@@ -34,9 +35,9 @@ public class MuteCommand implements Command {
 
         var messageConfig = getMessagesConfig();
         if(extractedDetails.silent()) {
-            Bukkit.broadcast(messageConfig.getMuteCommandAlertSilent(target.getName(), extractedDetails.reason(), extractedDetails.issuer()), permissionsConfig.getSilentByPassPermission());
+            BukkitUtils.broadcast(messageConfig.getMuteCommandAlertSilent(target.getName(), extractedDetails.reason(), extractedDetails.issuer()), permissionsConfig.getSilentByPassPermission());
         } else {
-            Bukkit.broadcastMessage(messageConfig.getMuteCommandAlertPublic(target.getName(), extractedDetails.reason(), extractedDetails.issuer()));
+            BukkitUtils.broadcast(messageConfig.getMuteCommandAlertPublic(target.getName(), extractedDetails.reason(), extractedDetails.issuer()));
         }
 
         sender.sendMessage(messageConfig.getMuteCommandSuccess(target.getName(), extractedDetails.reason(), extractedDetails.issuer()));

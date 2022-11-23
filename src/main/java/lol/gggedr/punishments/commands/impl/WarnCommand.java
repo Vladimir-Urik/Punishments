@@ -5,6 +5,7 @@ import lol.gggedr.punishments.commands.annotations.CommandInfo;
 import lol.gggedr.punishments.cons.Punishment;
 import lol.gggedr.punishments.enums.PunishmentType;
 import lol.gggedr.punishments.managers.impl.PunishmentsManager;
+import lol.gggedr.punishments.utils.BukkitUtils;
 import lol.gggedr.punishments.utils.PunishmentsUtils;
 import org.bson.types.ObjectId;
 import org.bukkit.Bukkit;
@@ -31,9 +32,9 @@ public class WarnCommand implements Command {
 
         var messageConfig = getMessagesConfig();
         if(extractedDetails.silent()) {
-            Bukkit.broadcast(messageConfig.getWarnCommandAlertSilent(target.getName(), extractedDetails.reason(), extractedDetails.issuer()), permissionsConfig.getSilentByPassPermission());
+            BukkitUtils.broadcast(messageConfig.getWarnCommandAlertSilent(target.getName(), extractedDetails.reason(), extractedDetails.issuer()), permissionsConfig.getSilentByPassPermission());
         } else {
-            Bukkit.broadcastMessage(messageConfig.getWarnCommandAlertPublic(target.getName(), extractedDetails.reason(), extractedDetails.issuer()));
+            BukkitUtils.broadcast(messageConfig.getWarnCommandAlertPublic(target.getName(), extractedDetails.reason(), extractedDetails.issuer()));
         }
 
         sender.sendMessage(messageConfig.getWarnCommandSuccess(target.getName(), extractedDetails.reason(), extractedDetails.issuer()));

@@ -6,56 +6,79 @@ import java.util.regex.Pattern;
 
 public class TimeUtils {
 
-    private static final Pattern TIME_PATTERN = Pattern.compile("(\\d+)([smhdwMy])");
+    // Parse :
+    // 1d2h3m4s -> 1 day, 2 hours, 3 minutes, 4 seconds
+    // 20mo -> 20 months
+    // 1y -> 1 year
+    // 1w -> 1 week
+    // 1d -> 1 day
+    // 1h -> 1 hour
+    // 1m -> 1 minute
+    // 1s -> 1 second
+    private static final Pattern TIME_PATTERN = Pattern.compile("(\\d+)([a-zA-Z]+)");
 
     public static boolean isStartWithTime(String string) {
         return TIME_PATTERN.matcher(string).find();
     }
 
     public static long parseTime(String string) {
-        var time = 0;
+        var time = 0L;
         var matcher = TIME_PATTERN.matcher(string);
         while (matcher.find()) {
             var number = Integer.parseInt(matcher.group(1));
             var unit = matcher.group(2);
             switch (unit) {
-                case "s" -> time += number * 1000;
-                case "m" -> time += number * 1000 * 60;
-                case "h" -> time += number * 1000 * 60 * 60;
-                case "d" -> time += number * 1000 * 60 * 60 * 24;
-                case "w" -> time += number * 1000 * 60 * 60 * 24 * 7;
-                case "M" -> time += number * 1000 * 60 * 60 * 24 * 30;
-                case "y" -> time += number * 1000 * 60 * 60 * 24 * 365;
+                case "y" -> time += TimeUnit.DAYS.toMillis(number * 365L);
+                case "mo" -> time += TimeUnit.DAYS.toMillis(number * 30L);
+                case "w" -> time += TimeUnit.DAYS.toMillis(number * 7L);
+                case "d" -> time += TimeUnit.DAYS.toMillis(number);
+                case "h" -> time += TimeUnit.HOURS.toMillis(number);
+                case "m" -> time += TimeUnit.MINUTES.toMillis(number);
+                case "s" -> time += TimeUnit.SECONDS.toMillis(number);
             }
         }
         return time;
     }
 
     public static String formatExpiration(long millis) {
-        var years = TimeUnit.DAYS.convert(millis, TimeUnit.MILLISECONDS) / 365;
-        millis -= TimeUnit.MILLISECONDS.convert(years, TimeUnit.DAYS);
-        var months = TimeUnit.DAYS.convert(millis, TimeUnit.MILLISECONDS) / 30;
-        millis -= TimeUnit.MILLISECONDS.convert(months, TimeUnit.DAYS);
-        var weeks = TimeUnit.DAYS.convert(millis, TimeUnit.MILLISECONDS) / 7;
-        millis -= TimeUnit.MILLISECONDS.convert(weeks, TimeUnit.DAYS);
-        var days = TimeUnit.DAYS.convert(millis, TimeUnit.MILLISECONDS);
-        millis -= TimeUnit.MILLISECONDS.convert(days, TimeUnit.DAYS);
-        var hours = TimeUnit.HOURS.convert(millis, TimeUnit.MILLISECONDS);
-        millis -= TimeUnit.MILLISECONDS.convert(hours, TimeUnit.HOURS);
-        var minutes = TimeUnit.MINUTES.convert(millis, TimeUnit.MILLISECONDS);
-        millis -= TimeUnit.MILLISECONDS.convert(minutes, TimeUnit.MINUTES);
-        var seconds = TimeUnit.SECONDS.convert(millis, TimeUnit.MILLISECONDS);
-
+        var time = millis;
         var builder = new StringBuilder();
-        if (years > 0) builder.append(years).append("y ");
-        if (months > 0) builder.append(months).append("M ");
-        if (weeks > 0) builder.append(weeks).append("w ");
-        if (days > 0) builder.append(days).append("d ");
-        if (hours > 0) builder.append(hours).append("h ");
-        if (minutes > 0) builder.append(minutes).append("m ");
-        if (seconds > 0) builder.append(seconds).append("s ");
+        var years = TimeUnit.MILLISECONDS.toDays(time) / 365L;
+        if (years > 0) {
+            builder.append(years).append("y ");
+            time -= TimeUnit.DAYS.toMillis(years * 365L);
+        }
 
-        return builder.toString().trim();
+        var months = TimeUnit.MILLISECONDS.toDays(time) / 30L;
+        if (months > 0) {
+            builder.append(months).append("mo ");
+            time -= TimeUnit.DAYS.toMillis(months * 30L);
+        }
+
+        var days = TimeUnit.MILLISECONDS.toDays(time);
+        if (days > 0) {
+            builder.append(days).append("d ");
+            time -= TimeUnit.DAYS.toMillis(days);
+        }
+
+        var hours = TimeUnit.MILLISECONDS.toHours(time);
+        if (hours > 0) {
+            builder.append(hours).append("h ");
+            time -= TimeUnit.HOURS.toMillis(hours);
+        }
+
+        var minutes = TimeUnit.MILLISECONDS.toMinutes(time);
+        if (minutes > 0) {
+            builder.append(minutes).append("m ");
+            time -= TimeUnit.MINUTES.toMillis(minutes);
+        }
+
+        var seconds = TimeUnit.MILLISECONDS.toSeconds(time);
+        if (seconds > 0) {
+            builder.append(seconds).append("s ");
+        }
+
+        return builder.toString();
     }
 
 }

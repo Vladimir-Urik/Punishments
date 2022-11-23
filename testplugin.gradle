@@ -1,0 +1,77 @@
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+
+
+abstract class TestPluginTask extends DefaultTask {
+    @Input
+    String serverVersion = '1.19.2'
+    @Input
+    String pluginJar = "${project.name}-${project.version}-${System.getenv('BUILD_NUMBER') ?: 'DEV'}.jar"
+
+    @TaskAction
+    void run() {
+        def serverFolder = new File(project.buildDir, 'server')
+        def serverFile = new File(serverFolder, 'server.jar')
+        def eulaFile = new File(serverFolder, 'eula.txt')
+
+        if (!serverFolder.exists()) {
+            System.out.println("Downloading Paper ${serverVersion}...")
+            serverFolder.mkdir()
+
+            def url = "";
+            switch (serverVersion) {
+                case "1.19.2":
+                    url = "https://api.papermc.io/v2/projects/paper/versions/1.19.2/builds/282/downloads/paper-1.19.2-282.jar"
+                    break;
+                case "1.12.2":
+                    url = "https://api.papermc.io/v2/projects/paper/versions/1.12.2/builds/1620/downloads/paper-1.12.2-1620.jar"
+                    break;
+                case "1.8.8":
+                    url = "https://api.papermc.io/v2/projects/paper/versions/1.8.8/builds/445/downloads/paper-1.8.8-445.jar"
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unsupported server version: ${serverVersion}")
+            }
+
+            serverFile.withOutputStream { os ->
+                new URL(url).openStream().withStream { is ->
+                    os << is
+                }
+            }
+        }
+
+        if (!eulaFile.exists()) {
+            System.out.println("Applying EULA...")
+            eulaFile.createNewFile()
+            eulaFile << 'eula=true'
+            System.out.println("EULA applied!")
+        }
+
+        def pluginsFolder = new File(serverFolder, 'plugins')
+        if(!pluginsFolder.exists()) {
+            System.out.println("Creating plugins folder...")
+            pluginsFolder.mkdir()
+            System.out.println("Plugins folder created!")
+        }
+
+        System.out.println("Copying plugin jar...")
+        def pluginBuild = new File(project.buildDir, 'libs/'+ pluginJar)
+        def finalPlugin = new File(pluginsFolder, pluginJar)
+        Files.copy(pluginBuild.toPath(), finalPlugin.toPath(), StandardCopyOption.REPLACE_EXISTING)
+        System.out.println("Plugin jar copied!")
+
+        System.out.println("Starting server...")
+        project.javaexec {
+            args = [serverFile.name, '--nogui']
+            workingDir = serverFolder
+            standardInput = System.in
+            mainClass.set("-jar")
+        }
+
+        System.out.println("Server stopped!")
+    }
+}
+
+tasks.register('testPlugin', TestPluginTask) {
+    dependsOn 'shadowJar'
+}

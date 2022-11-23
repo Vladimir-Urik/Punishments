@@ -1,0 +1,48 @@
+var buildNumber = System.getenv('BUILD_NUMBER') ?: 'DEV'
+
+def targetJavaVersion = 17
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+processResources {
+    def props = [
+            name: project.name,
+            version: project.version,
+            buildNumber: buildNumber,
+    ]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        options.release = targetJavaVersion
+    }
+}
+
+tasks.jar.configure {
+    manifest {
+        attributes 'Author': 'GGGEDR <Vladimir-Urik>'
+        attributes 'Plugin-Version': project.version
+        attributes 'Build-Number': buildNumber
+        attributes 'Build-Date': new Date().format('dd.MM.yyyy HH:mm:ss')
+    }
+
+    dependsOn(tasks.shadowJar)
+    enabled = false
+}
+
+shadowJar {
+    archiveBaseName.set(project.name)
+    archiveClassifier.set('')
+    archiveVersion.set(project.version +'-'+ buildNumber)
+}

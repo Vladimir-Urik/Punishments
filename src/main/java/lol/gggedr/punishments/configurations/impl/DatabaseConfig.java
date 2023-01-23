@@ -7,6 +7,9 @@ import lol.gggedr.punishments.configurations.annotations.ConfigInfo;
 @ConfigInfo(fileName = "database.yml")
 public class DatabaseConfig implements Config {
 
+    @ConfigField(path = "type")
+    private String type = "mysql";
+
     @ConfigField(path = "host")
     private String host = "localhost";
 
@@ -47,5 +50,9 @@ public class DatabaseConfig implements Config {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getType() {
+        return type;
     }
 }

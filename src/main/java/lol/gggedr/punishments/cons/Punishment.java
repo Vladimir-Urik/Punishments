@@ -50,41 +50,6 @@ public final class Punishment {
     }
 
     /**
-     * It inserts a new document into the database
-     */
-    public void insert() {
-        var collection = Managers.getManager(DatabaseManager.class).getCollection();
-
-        var query = new BasicDBObject();
-        query.put("nickname", nickname);
-        query.put("type", type.name());
-        query.put("active", true);
-
-        var updatedDocument = new Document();
-        updatedDocument.put("active", false);
-        updatedDocument.put("removedBy", this.issuer);
-        updatedDocument.put("removedReason", "Replaced by a new punishment.");
-
-        var document = new Document();
-        document.put("$set", updatedDocument);
-        collection.updateMany(query, document);
-
-        collection.insertOne(toDocument());
-    }
-
-    /**
-     * It updates the database with the current values of the object
-     */
-    public void update() {
-        var collection = Managers.getManager(DatabaseManager.class).getCollection();
-
-        var query = new BasicDBObject("_id", id);
-        var update = new BasicDBObject("$set", toUpdateDocument());
-
-        collection.findOneAndUpdate(query, update);
-    }
-
-    /**
      * It creates a new document, iterates over the updates list, and adds each field to the document
      *
      * @return A Document object that contains the updates to the object.
@@ -138,17 +103,6 @@ public final class Punishment {
                 document.getString("removedBy"),
                 document.getString("removeReason")
         );
-    }
-
-    /**
-     * "Delete the document from the database with the same _id as this object."
-     * <p>
-     * The first line gets the collection from the database. The second line deletes the document with the same _id as this
-     * object
-     */
-    public void delete() {
-        var collection = Managers.getManager(DatabaseManager.class).getCollection();
-        collection.deleteOne(new BasicDBObject("_id", id));
     }
 
     /**

@@ -3,6 +3,8 @@ package lol.gggedr.punishments.commands.impl;
 import lol.gggedr.punishments.commands.Command;
 import lol.gggedr.punishments.commands.annotations.CommandInfo;
 import lol.gggedr.punishments.enums.PunishmentType;
+import lol.gggedr.punishments.managers.Managers;
+import lol.gggedr.punishments.managers.impl.DatabaseManager;
 import lol.gggedr.punishments.managers.impl.PunishmentsManager;
 import lol.gggedr.punishments.utils.PunishmentsUtils;
 import org.bukkit.command.CommandSender;
@@ -38,7 +40,8 @@ public class UnbanCommand implements Command {
         punishment.setActive(false);
         punishment.setRemovedBy(sender.getName());
         punishment.setRemoveReason(finalReason);
-        punishment.update();
+        var dataStore = Managers.getManager(DatabaseManager.class).getDataStore();
+        dataStore.updatePunishment(punishment);
 
         punishmentsManager.removePunishment(target, PunishmentType.BAN);
 

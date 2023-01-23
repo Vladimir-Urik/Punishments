@@ -3,7 +3,10 @@ package lol.gggedr.punishments.commands.impl;
 import lol.gggedr.punishments.commands.Command;
 import lol.gggedr.punishments.commands.annotations.CommandInfo;
 import lol.gggedr.punishments.cons.Punishment;
+import lol.gggedr.punishments.datastore.DataStore;
 import lol.gggedr.punishments.enums.PunishmentType;
+import lol.gggedr.punishments.managers.Managers;
+import lol.gggedr.punishments.managers.impl.DatabaseManager;
 import lol.gggedr.punishments.managers.impl.PunishmentsManager;
 import lol.gggedr.punishments.utils.BukkitUtils;
 import lol.gggedr.punishments.utils.PunishmentsUtils;
@@ -29,7 +32,8 @@ public class BanCommand implements Command {
         var target = Bukkit.getPlayer(extractedDetails.nickname());
 
         var punishment = new Punishment(new ObjectId(), extractedDetails.nickname(), extractedDetails.reason(), sender.getName(), System.currentTimeMillis(), (extractedDetails.isPermanent() ? -1L : System.currentTimeMillis() + extractedDetails.duration()), PunishmentType.BAN, true, "-", "-");
-        punishment.insert();
+        var dataStore = Managers.getManager(DatabaseManager.class).getDataStore();
+        dataStore.insertPunishment(punishment);
         var manager = getManager(PunishmentsManager.class);
         manager.addPunishment(punishment);
 

@@ -27,7 +27,7 @@ public class HistoryCommand implements Command {
         }
 
         var target = args[0];
-        var punishments = getManager(DatabaseManager.class).getAllPunishments(target);
+        var punishments = getManager(DatabaseManager.class).getDataStore().getAllPunishments(target);
 
         if(punishments.isEmpty()) {
             sender.sendMessage(getMessagesConfig().getHistoryCommandNoHistory(target));

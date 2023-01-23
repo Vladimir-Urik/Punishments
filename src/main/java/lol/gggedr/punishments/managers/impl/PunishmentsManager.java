@@ -20,13 +20,14 @@ public class PunishmentsManager implements Manager {
     @Override
     public void onEnable() {
         task = Bukkit.getScheduler().runTaskTimerAsynchronously(getPlugin(), () -> {
-            var punishmentsToExpire = getManager(DatabaseManager.class).getPunishmentsToExpire();
+            var dataStore = getManager(DatabaseManager.class).getDataStore();
+            var punishmentsToExpire = dataStore.getPunishmentsToExpire();
             punishmentsToExpire.forEach(punishment -> {
                 punishment.setActive(false);
                 punishment.setRemovedBy("System");
                 punishment.setRemoveReason("The punishment has expired.");
 
-                punishment.update();
+                dataStore.deletePunishment(punishment);
                 punishments.removeIf(cachedValue -> cachedValue.getValue().getId().equals(punishment.getId()));
             });
 
@@ -119,8 +120,8 @@ public class PunishmentsManager implements Manager {
             return;
         }
 
-        var databaseManager = getManager(DatabaseManager.class);
-        var punishments = databaseManager.getActivePunishments(nickname);
+        var dataStore = getManager(DatabaseManager.class).getDataStore();
+        var punishments = dataStore.getActivePunishments(nickname);
         punishments.forEach(punishment -> this.punishments.add(new CachedValue<>(punishment, System.currentTimeMillis(), TimeUnit.MINUTES.toMillis(15))));
     }
 
@@ -128,8 +129,8 @@ public class PunishmentsManager implements Manager {
         var punishment = getPunishment(nickname, type);
         if(punishment != null) return punishment.getValue();
 
-        var databaseManager = getManager(DatabaseManager.class);
-        return databaseManager.getPunishment(nickname, type);
+        var dataStore = getManager(DatabaseManager.class).getDataStore();
+        return dataStore.getPunishment(nickname, type);
     }
 
 }

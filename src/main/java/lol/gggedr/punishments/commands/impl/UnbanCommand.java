@@ -9,7 +9,7 @@ import lol.gggedr.punishments.managers.impl.PunishmentsManager;
 import lol.gggedr.punishments.utils.PunishmentsUtils;
 import org.bukkit.command.CommandSender;
 
-@CommandInfo(name = "unban")
+@CommandInfo(name = "unban", aliases = {"pardon"})
 public class UnbanCommand implements Command {
 
     @Override

@@ -27,5 +27,9 @@ The plugin also provides a variety of punishment commands that allow administrat
 - `Sponge Support [❌ IN DEV]`
 - `Public API [❌ IN DEV]`
 
+## Showcase
+![Full History Menu](https://i.imgur.com/d7YB5cW.png)
+![History menu](https://i.imgur.com/ViFtzlj.png)
+
 ## Special Thanks
  - `/* If you also want to be in this list you can donate something for development or contribute a "piece" of your code to this repository :D */`

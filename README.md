@@ -1,6 +1,4 @@
 # Punishments
-
-## What is Punishments?
 The Punishments plugin for Bukkit is a powerful tool that allows server administrators to easily issue and manage punishments for players who violate the server's rules. One of its key features is the History GUI, which provides a user-friendly interface that allows administrators to view a player's complete punishment history, including the type of punishment, the reason for the punishment, and the date and time it was issued.
 
 The plugin also provides a variety of punishment commands that allow administrators to quickly and easily issue punishments to players. These commands include:

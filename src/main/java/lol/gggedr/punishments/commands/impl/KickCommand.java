@@ -2,9 +2,11 @@ package lol.gggedr.punishments.commands.impl;
 
 import lol.gggedr.punishments.commands.Command;
 import lol.gggedr.punishments.commands.annotations.CommandInfo;
+import lol.gggedr.punishments.configurations.impl.MessagesConfig;
 import lol.gggedr.punishments.cons.Punishment;
 import lol.gggedr.punishments.enums.PunishmentType;
 import lol.gggedr.punishments.managers.Managers;
+import lol.gggedr.punishments.managers.impl.ConfigurationsManager;
 import lol.gggedr.punishments.managers.impl.DatabaseManager;
 import lol.gggedr.punishments.managers.impl.PunishmentsManager;
 import lol.gggedr.punishments.utils.BukkitUtils;
@@ -19,6 +21,7 @@ public class KickCommand implements Command {
     @Override
     public void execute(CommandSender sender, String[] args) {
         var permissionsConfig = getPermissionsConfig();
+        var messagesConfig = getMessagesConfig();
 
         if(!PunishmentsUtils.hasPermissions(sender, permissionsConfig.getKickCommandPermission())) return;
 
@@ -26,6 +29,11 @@ public class KickCommand implements Command {
         if(extractedDetails == null) return;
 
         var target = Bukkit.getPlayer(extractedDetails.nickname());
+        if(target == null) {
+            var playerNotFound = messagesConfig.getPlayerNotFoundMessage();
+            sender.sendMessage(playerNotFound);
+            return;
+        }
 
         var punishment = new Punishment(new ObjectId(), extractedDetails.nickname(), extractedDetails.reason(), sender.getName(), System.currentTimeMillis(), -1L, PunishmentType.KICK, true, "-", "-");
         var dataStore = Managers.getManager(DatabaseManager.class).getDataStore();

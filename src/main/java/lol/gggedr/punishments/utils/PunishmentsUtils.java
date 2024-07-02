@@ -27,11 +27,6 @@ public class PunishmentsUtils {
         }
 
         var nickname = args[0];
-        if(Bukkit.getPlayer(nickname) == null) {
-            var playerNotFound = messagesConfig.getPlayerNotFoundMessage();
-            sender.sendMessage(playerNotFound);
-            return null;
-        }
 
         var duration = -1L;
         StringBuilder reason = new StringBuilder();

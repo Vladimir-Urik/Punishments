@@ -25,8 +25,6 @@ public class WarnCommand implements Command {
         var extractedDetails = PunishmentsUtils.extractBasePunishmentDetails(sender, args, "warn");
         if(extractedDetails == null) return;
 
-        var target = Bukkit.getPlayer(extractedDetails.nickname());
-
         var punishment = new Punishment(new ObjectId(), extractedDetails.nickname(), extractedDetails.reason(), sender.getName(), System.currentTimeMillis(), -1L, PunishmentType.WARN, true, "-", "-");
         var dataStore = Managers.getManager(DatabaseManager.class).getDataStore();
         dataStore.updatePunishment(punishment);
@@ -35,12 +33,16 @@ public class WarnCommand implements Command {
 
         var messageConfig = getMessagesConfig();
         if(extractedDetails.silent()) {
-            BukkitUtils.broadcast(messageConfig.getWarnCommandAlertSilent(target.getName(), extractedDetails.reason(), extractedDetails.issuer()), permissionsConfig.getSilentByPassPermission());
+            BukkitUtils.broadcast(messageConfig.getWarnCommandAlertSilent(extractedDetails.nickname(), extractedDetails.reason(), extractedDetails.issuer()), permissionsConfig.getSilentByPassPermission());
         } else {
-            BukkitUtils.broadcast(messageConfig.getWarnCommandAlertPublic(target.getName(), extractedDetails.reason(), extractedDetails.issuer()));
+            BukkitUtils.broadcast(messageConfig.getWarnCommandAlertPublic(extractedDetails.nickname(), extractedDetails.reason(), extractedDetails.issuer()));
         }
 
-        sender.sendMessage(messageConfig.getWarnCommandSuccess(target.getName(), extractedDetails.reason(), extractedDetails.issuer()));
+        sender.sendMessage(messageConfig.getWarnCommandSuccess(extractedDetails.nickname(), extractedDetails.reason(), extractedDetails.issuer()));
+
+        var target = Bukkit.getPlayer(extractedDetails.nickname());
+        if(target == null) return;
+
         target.sendMessage(messageConfig.getWarnCommandAlertTarget(target.getName(), extractedDetails.reason(), extractedDetails.issuer()));
     }
 

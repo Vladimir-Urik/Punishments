@@ -8,7 +8,7 @@ import lol.gggedr.punishments.configurations.annotations.ConfigInfo;
 public class DatabaseConfig implements Config {
 
     @ConfigField(path = "type")
-    private String type = "mysql";
+    private String type = "mongo";
 
     @ConfigField(path = "host")
     private String host = "localhost";

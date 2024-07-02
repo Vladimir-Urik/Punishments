@@ -37,6 +37,12 @@ public class MessagesConfig implements Config {
     @ConfigField(path = "commands.kick.alert.silent")
     private String kickCommandAlertSilent = "&e%player% &ahas been kicked for &e%reason% &aby &e%issuer% &c(silent)";
 
+    @ConfigField(path = "commands.ban.alert.public")
+    private String banCommandAlertPublic = "&e%player% &ahas been banned for &e%reason% &aby &e%issuer%";
+
+    @ConfigField(path = "commands.ban.alert.silent")
+    private String banCommandAlertSilent = "&e%player% &ahas been banned for &e%reason% &aby &e%issuer% &c(silent)";
+
     @ConfigField(path = "commands.mute.usage")
     private String muteCommandUsage = "&cUsage: /mute <player> [duration] [reason] [-s]";
 
@@ -218,5 +224,19 @@ public class MessagesConfig implements Config {
 
     public String getPlayerNotMuted(String player) {
         return StringUtils.colorize(playerNotMuted).replace("%player%", player);
+    }
+
+    public String getBanCommandAlertPublic(String player, String reason, String issuer) {
+        return StringUtils.colorize(banCommandAlertPublic)
+                .replace("%player%", player)
+                .replace("%reason%", reason)
+                .replace("%issuer%", issuer);
+    }
+
+    public String getBanCommandAlertSilent(String player, String reason, String issuer) {
+        return StringUtils.colorize(banCommandAlertSilent)
+                .replace("%player%", player)
+                .replace("%reason%", reason)
+                .replace("%issuer%", issuer);
     }
 }

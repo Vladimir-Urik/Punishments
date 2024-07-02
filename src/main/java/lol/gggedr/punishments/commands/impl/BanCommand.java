@@ -29,7 +29,6 @@ public class BanCommand implements Command {
         var requiredPermission = extractedDetails.isPermanent() ? permissionsConfig.getPermanentBanCommandPermission() : permissionsConfig.getTempBanCommandPermission();
         if(!PunishmentsUtils.hasPermissions(sender, requiredPermission)) return;
 
-        var target = Bukkit.getPlayer(extractedDetails.nickname());
 
         var punishment = new Punishment(new ObjectId(), extractedDetails.nickname(), extractedDetails.reason(), sender.getName(), System.currentTimeMillis(), (extractedDetails.isPermanent() ? -1L : System.currentTimeMillis() + extractedDetails.duration()), PunishmentType.BAN, true, "-", "-");
         var dataStore = Managers.getManager(DatabaseManager.class).getDataStore();
@@ -39,16 +38,20 @@ public class BanCommand implements Command {
 
         var messageConfig = getMessagesConfig();
         if(extractedDetails.silent()) {
-            BukkitUtils.broadcast(messageConfig.getKickCommandAlertSilent(target.getName(), extractedDetails.reason(), extractedDetails.issuer()), permissionsConfig.getSilentByPassPermission());
+            BukkitUtils.broadcast(messageConfig.getBanCommandAlertSilent(extractedDetails.nickname(), extractedDetails.reason(), extractedDetails.issuer()), permissionsConfig.getSilentByPassPermission());
         } else {
-            BukkitUtils.broadcast(messageConfig.getKickCommandAlertPublic(target.getName(), extractedDetails.reason(), extractedDetails.issuer()));
+            BukkitUtils.broadcast(messageConfig.getBanCommandAlertPublic(extractedDetails.nickname(), extractedDetails.reason(), extractedDetails.issuer()));
         }
 
-        sender.sendMessage(messageConfig.getKickCommandSuccess(target.getName(), extractedDetails.reason(), extractedDetails.issuer()));
+        sender.sendMessage(messageConfig.getKickCommandSuccess(extractedDetails.nickname(), extractedDetails.reason(), extractedDetails.issuer()));
 
         var layoutsConfig = getLayoutsConfig();
         var layout = extractedDetails.isPermanent() ? layoutsConfig.getBanPermanent(extractedDetails.reason(), extractedDetails.issuer()) : layoutsConfig.getBanTemp(extractedDetails.reason(), extractedDetails.issuer(), (System.currentTimeMillis() + extractedDetails.duration()));
-        target.kickPlayer(layout);
+
+        var target = Bukkit.getPlayer(extractedDetails.nickname());
+        if(target != null) {
+            target.kickPlayer(layout);
+        }
     }
 
 }

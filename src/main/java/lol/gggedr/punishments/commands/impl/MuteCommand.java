@@ -28,7 +28,6 @@ public class MuteCommand implements Command {
         var requiredPermission = extractedDetails.isPermanent() ? permissionsConfig.getPermanentMuteCommandPermission() : permissionsConfig.getTempMuteCommandPermission();
         if(!PunishmentsUtils.hasPermissions(sender, requiredPermission)) return;
 
-        var target = Bukkit.getPlayer(extractedDetails.nickname());
 
         var punishment = new Punishment(new ObjectId(), extractedDetails.nickname(), extractedDetails.reason(), sender.getName(), System.currentTimeMillis(), (extractedDetails.isPermanent() ? -1L : System.currentTimeMillis() + extractedDetails.duration()), PunishmentType.MUTE, true, "-", "-");
         var dataStore = Managers.getManager(DatabaseManager.class).getDataStore();
@@ -38,12 +37,18 @@ public class MuteCommand implements Command {
 
         var messageConfig = getMessagesConfig();
         if(extractedDetails.silent()) {
-            BukkitUtils.broadcast(messageConfig.getMuteCommandAlertSilent(target.getName(), extractedDetails.reason(), extractedDetails.issuer()), permissionsConfig.getSilentByPassPermission());
+            BukkitUtils.broadcast(messageConfig.getMuteCommandAlertSilent(extractedDetails.nickname(), extractedDetails.reason(), extractedDetails.issuer()), permissionsConfig.getSilentByPassPermission());
         } else {
-            BukkitUtils.broadcast(messageConfig.getMuteCommandAlertPublic(target.getName(), extractedDetails.reason(), extractedDetails.issuer()));
+            BukkitUtils.broadcast(messageConfig.getMuteCommandAlertPublic(extractedDetails.nickname(), extractedDetails.reason(), extractedDetails.issuer()));
         }
 
-        sender.sendMessage(messageConfig.getMuteCommandSuccess(target.getName(), extractedDetails.reason(), extractedDetails.issuer()));
+        sender.sendMessage(messageConfig.getMuteCommandSuccess(extractedDetails.nickname(), extractedDetails.reason(), extractedDetails.issuer()));
+
+        var target = Bukkit.getPlayer(extractedDetails.nickname());
+        if (target == null) {
+            return;
+        }
+
         target.sendMessage(messageConfig.getMuteCommandAlertTarget(target.getName(), extractedDetails.reason(), extractedDetails.issuer()));
     }
 

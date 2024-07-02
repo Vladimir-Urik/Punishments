@@ -28,5 +28,4 @@ The plugin also provides a variety of punishment commands that allow administrat
 - `Public API [❌ IN DEV]`
 
 ## Special Thanks
- - [**@Fleebs.GG**](https://github.com/Fleeb-s-Pizza) - My development team
  - `/* If you also want to be in this list you can donate something for development or contribute a "piece" of your code to this repository :D */`
